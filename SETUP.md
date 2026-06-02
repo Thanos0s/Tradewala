@@ -80,6 +80,7 @@ Ensure you have the following installed on your machine:
 
 ### 2. Auto-Configuration Script
 The easiest way to initialize a new machine is to run our auto-setup wizard, which handles dependencies, browser configuration, repo cloning, and env setup automatically:
+Run this from the repository root after cloning `https://github.com/Thanos0s/Tradewala.git`:
 ```bash
 python setup_new_machine.py
 ```
@@ -90,7 +91,7 @@ If you prefer setting up manually, run the following steps:
 #### Step A: Install Python Packages
 ```bash
 pip install -r requirements.txt
-pip install pandas-ta
+pip install pandas-ta || pip install git+https://github.com/twopirllc/pandas-ta.git
 ```
 
 #### Step B: Install Playwright Browsers
@@ -103,6 +104,8 @@ python -m playwright install chromium
 ```bash
 git clone https://github.com/shiyu-coder/Kronos.git Kronos-repo
 ```
+
+> Note: the GitHub repo root contains `main.py`, `analysis/`, `data/`, and `output/` directly. There is no `kronos_india/` subfolder after cloning `Tradewala`.
 
 ---
 
