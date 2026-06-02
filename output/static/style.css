@@ -1,0 +1,125 @@
+/* Premium dark theme for KronosIndia dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --text-primary: #e0e0e0;
+  --accent: #ff6b6b;
+  --accent-light: #ff8a80;
+  --border-radius: 8px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background: linear-gradient(45deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.8rem;
+  color: var(--accent);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+thead th {
+  background: var(--bg-card);
+  color: var(--accent);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+tbody td {
+  background: var(--bg-card);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover td {
+  background: rgba(255,255,255,0.08);
+}
+
+tbody td:first-child {
+  font-weight: 600;
+  color: var(--accent-light);
+}
+
+/* Regime Banner */
+.regime-banner {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.regime-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.regime-detail {
+  font-size: 1rem;
+  color: #b0b0b0;
+  margin-bottom: 0.5rem;
+}
+.regime-reason {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--accent-light);
+}
+
+/* Regime Types Accent Borders */
+.regime-bull_market { border-left: 6px solid #4caf50; }
+.regime-bear_market { border-left: 6px solid #f44336; }
+.regime-sideways { border-left: 6px solid #2196f3; }
+.regime-volatile { border-left: 6px solid #e91e63; }
+
+/* Highlighted Column and Alignment */
+.highlighted {
+  color: #4caf50 !important;
+  font-weight: 700;
+}
+.numeric {
+  font-family: monospace;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 768px) {
+  body { padding: 1rem; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+}

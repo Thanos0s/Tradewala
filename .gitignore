@@ -1,0 +1,29 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local model checkout and other nested repos
+Kronos-repo/
+plugins/**/.git/
+plugins/superpowers/
+
+# Generated and runtime data
+data/cache/
+data/trading_journal.db
+data/*.parquet
+data/fine_tune_dataset.csv
+output/reports/
+output/*.log
+output/*.txt
+output/dashboard_data.json
+scratch/
+
+# Environment and OS clutter
+.env
+.DS_Store
+Thumbs.db

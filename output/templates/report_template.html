@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KronosIndia Daily Trading Report - {{ date }}</title>
+    <style>
+        /* Premium dark theme for KronosIndia standalone report */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+          --bg-primary: #0a0a0a;
+          --bg-card: rgba(255, 255, 255, 0.04);
+          --text-primary: #e0e0e0;
+          --accent: #ff6b6b;
+          --accent-light: #ff8a80;
+          --border-radius: 8px;
+          --shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background: var(--bg-primary);
+          color: var(--text-primary);
+          line-height: 1.6;
+          padding: 2rem;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        header {
+          text-align: center;
+          margin-bottom: 3rem;
+          padding-bottom: 1.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+          background: linear-gradient(45deg, var(--accent), var(--accent-light));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .timestamp {
+          color: #888;
+          font-size: 0.95rem;
+        }
+
+        section {
+          margin-bottom: 3rem;
+        }
+
+        h2 {
+          font-size: 1.8rem;
+          margin-bottom: 1rem;
+          color: var(--accent);
+          border-left: 4px solid var(--accent);
+          padding-left: 0.75rem;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: separate;
+          border-spacing: 0 0.5rem;
+          margin-top: 1rem;
+        }
+
+        thead th {
+          background: var(--bg-card);
+          color: var(--accent);
+          font-weight: 600;
+          padding: 1rem;
+          text-align: left;
+        }
+
+        thead th:first-child {
+          border-top-left-radius: var(--border-radius);
+          border-bottom-left-radius: var(--border-radius);
+        }
+
+        thead th:last-child {
+          border-top-right-radius: var(--border-radius);
+          border-bottom-right-radius: var(--border-radius);
+        }
+
+        tbody td {
+          background: var(--bg-card);
+          padding: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.02);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        tbody tr:hover td {
+          background: rgba(255,255,255,0.08);
+        }
+
+        tbody td:first-child {
+          font-weight: 600;
+          color: var(--accent-light);
+          border-top-left-radius: var(--border-radius);
+          border-bottom-left-radius: var(--border-radius);
+          border-left: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        tbody td:last-child {
+          border-top-right-radius: var(--border-radius);
+          border-bottom-right-radius: var(--border-radius);
+          border-right: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .score-badge {
+          background: rgba(255, 107, 107, 0.15);
+          color: var(--accent-light);
+          padding: 0.25rem 0.6rem;
+          border-radius: 4px;
+          font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+          body { padding: 1rem; }
+          h1 { font-size: 2rem; }
+          h2 { font-size: 1.5rem; }
+          thead { display: none; }
+          tbody td { display: block; text-align: right; padding: 0.5rem 1rem; }
+          tbody td::before { content: attr(data-label); float: left; color: #888; }
+          tbody td:first-child { border-radius: var(--border-radius) var(--border-radius) 0 0; text-align: center; color: var(--accent); }
+          tbody td:last-child { border-radius: 0 0 var(--border-radius) var(--border-radius); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KronosIndia Trading Recommendations</h1>
+            <div class="timestamp">Generated on: {{ date }}</div>
+        </header>
+
+        <section>
+            <h2>Intraday Picks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Total Score</th>
+                        <th>Entry Price</th>
+                        <th>Target Price</th>
+                        <th>Stop Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stock in intraday %}
+                    <tr>
+                        <td data-label="Symbol">{{ stock.symbol }}</td>
+                        <td data-label="Total Score"><span class="score-badge">{{ stock.total_score }}</span></td>
+                        <td data-label="Entry Price">{{ "%.2f"|format(stock.entry) if stock.entry else "-" }}</td>
+                        <td data-label="Target Price">{{ "%.2f"|format(stock.target) if stock.target else "-" }}</td>
+                        <td data-label="Stop Loss">{{ "%.2f"|format(stock.stop_loss) if stock.stop_loss else "-" }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" style="text-align: center;">No intraday picks selected for today.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>High-Risk / High-Reward Picks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Total Score</th>
+                        <th>Entry Price</th>
+                        <th>Target Price</th>
+                        <th>Stop Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stock in high_risk %}
+                    <tr>
+                        <td data-label="Symbol">{{ stock.symbol }}</td>
+                        <td data-label="Total Score"><span class="score-badge">{{ stock.total_score }}</span></td>
+                        <td data-label="Entry Price">{{ "%.2f"|format(stock.entry) if stock.entry else "-" }}</td>
+                        <td data-label="Target Price">{{ "%.2f"|format(stock.target) if stock.target else "-" }}</td>
+                        <td data-label="Stop Loss">{{ "%.2f"|format(stock.stop_loss) if stock.stop_loss else "-" }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" style="text-align: center;">No high-risk picks selected for today.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Swing Picks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Total Score</th>
+                        <th>Entry Price</th>
+                        <th>Target Price</th>
+                        <th>Stop Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stock in swing %}
+                    <tr>
+                        <td data-label="Symbol">{{ stock.symbol }}</td>
+                        <td data-label="Total Score"><span class="score-badge">{{ stock.total_score }}</span></td>
+                        <td data-label="Entry Price">{{ "%.2f"|format(stock.entry) if stock.entry else "-" }}</td>
+                        <td data-label="Target Price">{{ "%.2f"|format(stock.target) if stock.target else "-" }}</td>
+                        <td data-label="Stop Loss">{{ "%.2f"|format(stock.stop_loss) if stock.stop_loss else "-" }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" style="text-align: center;">No swing picks selected for today.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

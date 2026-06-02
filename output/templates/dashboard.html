@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradewala - KronosIndia Live Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Modern Premium CSS Variables & Glassmorphism design overrides */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #070913 0%, #0c0f25 100%);
+            --panel-bg: rgba(16, 22, 47, 0.4);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --glow-green: 0 0 15px rgba(76, 175, 80, 0.3);
+            --glow-red: 0 0 15px rgba(244, 67, 54, 0.3);
+            --text-muted: #8c9bb4;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 1.5rem;
+            color: #f1f4fa;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 1rem;
+        }
+
+        .logo-area h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            margin: 0;
+            background: linear-gradient(90deg, #ff7b7b, #ffae8f, #ff7b7b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .status-badge {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid #4caf50;
+            color: #81c784;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .side-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            border-left: 4px solid var(--accent);
+            padding-left: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Live Alerts items styling */
+        .alert-card {
+            background: rgba(255, 107, 107, 0.08);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: 8px;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease-out;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .alert-msg {
+            color: #ff8a80;
+            font-weight: 600;
+        }
+
+        /* Table flash effects */
+        .flash-green {
+            background-color: rgba(76, 175, 80, 0.2) !important;
+            transition: background-color 0.5s ease-out;
+        }
+
+        .flash-red {
+            background-color: rgba(244, 67, 54, 0.2) !important;
+            transition: background-color 0.5s ease-out;
+        }
+
+        .price-ticker {
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        /* Sector momentum list */
+        .sector-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sector-high {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.08);
+            color: #81c784;
+        }
+
+        /* Sparkline canvas sizing */
+        .sparkline-canvas {
+            width: 100px;
+            height: 30px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <h1>Tradewala - KronosIndia</h1>
+            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Real-Time Institutional Order Flow & Quant Terminal
+            </div>
+        </div>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            <span id="conn-status">LIVE FEED ACTIVE</span>
+        </div>
+    </header>
+
+    <!-- Market Regime Info Banner -->
+    <div class="regime-banner regime-{{ regime.regime|lower }}">
+        <div class="regime-title">Market Regime: {{ regime.regime }}</div>
+        <div class="regime-detail">
+            <strong>Trend:</strong> {{ regime.nifty_trend }} | 
+            <strong>VIX:</strong> {{ regime.vix|round(2) }} | 
+            <strong>Nifty PCR:</strong> {{ regime.pcr|round(2) }}
+        </div>
+        <div class="regime-reason">{{ regime.reason }}</div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="main-panel">
+            <!-- Sector Momentum Widget -->
+            <div class="side-panel" style="max-height: none; padding: 1.2rem;">
+                <div class="panel-title">Active Sector Momentum</div>
+                <div style="margin-top: 0.5rem;">
+                    <strong>Top Performing Sector:</strong> 
+                    <span class="highlighted" style="font-size: 1.1rem; margin-left: 0.3rem;">{{ sector_momentum.top_sector }}</span>
+                </div>
+                <div style="margin-top: 0.8rem; display: flex; flex-wrap: wrap;">
+                    {% for sec in sector_momentum.sectors %}
+                        <span class="sector-badge {% if sec.strength == 'HIGH' %}sector-high{% endif %}">
+                            {{ sec.sector }} ({{ sec.momentum }})
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Intraday Picks -->
+            <section class="side-panel" style="max-height: none; overflow: visible;">
+                <div class="panel-title">Live Intraday Picks</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Current Price</th>
+                            <th>XGB Prob</th>
+                            <th>Total Score</th>
+                            <th>Capital Req.</th>
+                            <th>Target</th>
+                            <th>Stop Loss</th>
+                            <th>Trend (10 ticks)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="intraday-table-body">
+                    {% for stock in picks.intraday_picks %}
+                        <tr id="row-{{ stock.symbol }}">
+                            <td>{{ stock.symbol }}</td>
+                            <td class="price-ticker" id="price-{{ stock.symbol }}">₹{{ stock.entry }}</td>
+                            <td>{{ stock.xgb_probability }}%</td>
+                            <td>{{ stock.total_score }}</td>
+                            <td class="numeric">₹{{ stock.risk_management.allocated_capital if stock.risk_management else '-' }}</td>
+                            <td>{{ stock.target }}</td>
+                            <td>{{ stock.stop_loss }}</td>
+                            <td><canvas class="sparkline-canvas" id="spark-{{ stock.symbol }}"></canvas></td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="8">No active intraday picks. Waiting for scoring updates...</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Swing Picks -->
+            <section class="side-panel" style="max-height: none; overflow: visible;">
+                <div class="panel-title">Live Swing Picks</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Current Price</th>
+                            <th>XGB Prob</th>
+                            <th>Total Score</th>
+                            <th>Capital Req.</th>
+                            <th>Target</th>
+                            <th>Stop Loss</th>
+                            <th>Trend (10 ticks)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="swing-table-body">
+                    {% for stock in picks.swing_picks %}
+                        <tr id="row-{{ stock.symbol }}">
+                            <td>{{ stock.symbol }}</td>
+                            <td class="price-ticker" id="price-{{ stock.symbol }}">₹{{ stock.entry }}</td>
+                            <td>{{ stock.xgb_probability }}%</td>
+                            <td>{{ stock.total_score }}</td>
+                            <td class="numeric">₹{{ stock.risk_management.allocated_capital if stock.risk_management else '-' }}</td>
+                            <td>{{ stock.target }}</td>
+                            <td>{{ stock.stop_loss }}</td>
+                            <td><canvas class="sparkline-canvas" id="spark-{{ stock.symbol }}"></canvas></td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="8">No active swing picks. Waiting for scoring updates...</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- Sidebar Event-Driven Alert Feed -->
+        <div class="side-panel">
+            <div class="panel-title">Institutional Spike Feed</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                Streaming 1-minute order book imbalances and smart money triggers.
+            </div>
+            <div id="alert-feed-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="text-align: center; color: var(--text-muted); padding: 2rem 0; font-size: 0.9rem;">
+                    Waiting for spikes...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket logic
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws`;
+        const ws = new WebSocket(wsUrl);
+
+        const statusDot = document.querySelector('.status-dot');
+        const statusText = document.getElementById('conn-status');
+        const alertFeed = document.getElementById('alert-feed-container');
+
+        // Track price logs for sparkline rendering
+        const priceHistory = {};
+
+        ws.onopen = () => {
+            statusDot.style.backgroundColor = '#4caf50';
+            statusText.textContent = 'LIVE FEED ACTIVE';
+        };
+
+        ws.onclose = () => {
+            statusDot.style.backgroundColor = '#f44336';
+            statusText.textContent = 'FEED DISCONNECTED';
+        };
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+
+            if (msg.type === 'bootstrap') {
+                // Initialize price logs from worker history
+                for (const [symbol, ticks] of Object.entries(msg.history)) {
+                    priceHistory[symbol] = ticks.map(t => t.price);
+                    updateSparkline(symbol);
+                }
+            } else if (msg.type === 'live_tick') {
+                const tick = msg.data;
+                const symbol = tick.symbol;
+
+                // Update UI elements if the symbol exists on screen
+                const priceCell = document.getElementById(`price-${symbol}`);
+                const row = document.getElementById(`row-${symbol}`);
+
+                if (priceCell) {
+                    const oldPrice = parseFloat(priceCell.textContent.replace('₹', ''));
+                    const newPrice = tick.price;
+                    priceCell.textContent = `₹${newPrice.toFixed(2)}`;
+
+                    // Price flashing trigger
+                    if (row) {
+                        if (newPrice > oldPrice) {
+                            row.classList.add('flash-green');
+                            setTimeout(() => row.classList.remove('flash-green'), 500);
+                        } else if (newPrice < oldPrice) {
+                            row.classList.add('flash-red');
+                            setTimeout(() => row.classList.remove('flash-red'), 500);
+                        }
+                    }
+                }
+
+                // Add to price history
+                if (!priceHistory[symbol]) priceHistory[symbol] = [];
+                priceHistory[symbol].push(tick.price);
+                if (priceHistory[symbol].length > 15) priceHistory[symbol].shift();
+
+                updateSparkline(symbol);
+
+                // Smart Money Spike detection banner trigger
+                if (tick.spike_triggered) {
+                    addSpikeAlert(tick);
+                }
+            }
+        };
+
+        function addSpikeAlert(tick) {
+            // Remove fallback message
+            if (alertFeed.textContent.includes('Waiting for spikes')) {
+                alertFeed.innerHTML = '';
+            }
+
+            const alertHtml = `
+                <div class="alert-card">
+                    <div class="alert-time">${tick.timestamp}</div>
+                    <div class="alert-msg">🔥 SPIKE DETECTED in ${tick.symbol}</div>
+                    <div style="font-size: 0.8rem; margin-top: 0.2rem; color: #b0b0b0;">
+                        VWAP Dev: ${tick.vwap_deviation_pct.toFixed(2)}% | Imbalance: ${tick.orderbook_imbalance.toFixed(2)}
+                    </div>
+                </div>
+            `;
+            alertFeed.insertAdjacentHTML('afterbegin', alertHtml);
+
+            // Cap at 10 alerts in the feed
+            if (alertFeed.children.length > 10) {
+                alertFeed.removeChild(alertFeed.lastChild);
+            }
+        }
+
+        function updateSparkline(symbol) {
+            const canvas = document.getElementById(`spark-${symbol}`);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const history = priceHistory[symbol];
+            if (!history || history.length < 2) return;
+
+            // Handle high DPI displays
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = 100 * dpr;
+            canvas.height = 30 * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = 100;
+            const height = 30;
+
+            const min = Math.min(...history);
+            const max = Math.max(...history);
+            const range = max - min || 1;
+
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.beginPath();
+            ctx.strokeStyle = history[history.length - 1] >= history[0] ? '#81c784' : '#e57373';
+            ctx.lineWidth = 1.5;
+
+            for (let i = 0; i < history.length; i++) {
+                const x = (i / (history.length - 1)) * width;
+                const y = height - 3 - (((history[i] - min) / range) * (height - 6));
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
