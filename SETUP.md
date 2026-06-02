@@ -91,8 +91,8 @@ If you prefer setting up manually, run the following steps:
 #### Step A: Install Python Packages
 ```bash
 pip install -r requirements.txt
-pip install pandas-ta || pip install git+https://github.com/twopirllc/pandas-ta.git
 ```
+The repo now includes a local `pandas_ta.py` compatibility layer, so you do not need to install the external `pandas-ta` package on Lightsail.
 
 #### Step B: Install Playwright Browsers
 To enable our browser automation layers for bypasses and scraping:
@@ -106,6 +106,7 @@ git clone https://github.com/shiyu-coder/Kronos.git Kronos-repo
 ```
 
 > Note: the GitHub repo root contains `main.py`, `analysis/`, `data/`, and `output/` directly. There is no `kronos_india/` subfolder after cloning `Tradewala`.
+> If the files are missing on your server, run `git pull` in the repo root before setup.
 
 ---
 

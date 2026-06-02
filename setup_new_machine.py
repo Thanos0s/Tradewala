@@ -42,34 +42,10 @@ def install_dependencies():
     logger.info("Installing pip dependencies from %s...", requirements_path)
     try:
         subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(requirements_path)], check=True)
+        logger.info("Dependencies installed successfully.")
     except subprocess.CalledProcessError as e:
         logger.error("Failed to install requirements.txt: %s", e)
         sys.exit(1)
-
-    logger.info("Installing pandas_ta compatibility package...")
-    pandas_install = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "pandas-ta"],
-        capture_output=True,
-        text=True,
-    )
-    if pandas_install.returncode != 0:
-        logger.warning("pip install pandas-ta failed, retrying from GitHub source...")
-        try:
-            subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pip",
-                    "install",
-                    "git+https://github.com/twopirllc/pandas-ta.git",
-                ],
-                check=True,
-            )
-        except subprocess.CalledProcessError as e:
-            logger.error("Failed to install pandas_ta from GitHub: %s", e)
-            sys.exit(1)
-
-    logger.info("Dependencies installed successfully.")
 
 
 def install_playwright_chromium():
