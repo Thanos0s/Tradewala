@@ -102,13 +102,20 @@ class NewsScraper:
         try:
             txt = await self._fetch(url)
             data = json.loads(txt)
-            for rec in data.get("d", [])[:50]:
+            records = []
+            if isinstance(data, dict):
+                records = data.get("d", []) or data.get("Data", []) or []
+            elif isinstance(data, list):
+                records = data
+            for rec in records[:50]:
+                if not isinstance(rec, dict):
+                    continue
                 headline = rec.get("annTitle", "")
                 summary = rec.get("annDesc", "")
                 ts = rec.get("annDate", datetime.utcnow().isoformat())
                 articles.append({"headline": headline, "summary": summary, "timestamp": ts, "stock_mentioned": []})
         except Exception as e:
-            logging.error(f"BSE announcements error: {e}")
+            logging.warning(f"BSE announcements fallback: {e}")
         return articles
 
     async def scrape_nse_announcements(self) -> list:
@@ -118,13 +125,20 @@ class NewsScraper:
         try:
             txt = await self._fetch(url)
             data = json.loads(txt)
-            for rec in data.get("data", [])[:50]:
+            records = []
+            if isinstance(data, dict):
+                records = data.get("data", []) or data.get("result", []) or []
+            elif isinstance(data, list):
+                records = data
+            for rec in records[:50]:
+                if not isinstance(rec, dict):
+                    continue
                 headline = rec.get("headline", "")
                 summary = rec.get("description", "")
                 ts = rec.get("date", datetime.utcnow().isoformat())
                 articles.append({"headline": headline, "summary": summary, "timestamp": ts, "stock_mentioned": []})
         except Exception as e:
-            logging.error(f"NSE announcements error: {e}")
+            logging.warning(f"NSE announcements fallback: {e}")
         return articles
 
     def get_sector_news_summary(self, sectors: list, news_items: list) -> dict:
@@ -240,4 +254,3 @@ def scrape_news():
         
     logging.info(f"Successfully scraped {len(articles)} articles.")
     return articles
-

@@ -22,7 +22,8 @@ if _REPO_PATH.exists():
         _kronos_available = True
         logging.info(f"✅ Kronos classes imported from {_REPO_PATH}")
     except Exception as e:
-        logging.error(f"Failed to import Kronos model classes: {e}")
+        logging.warning(f"Failed to import Kronos model classes: {e}")
+        logging.warning("Install missing Kronos dependencies with: pip install -r requirements.txt")
 else:
     logging.warning(
         f"Kronos repo NOT found at {_REPO_PATH}. "
